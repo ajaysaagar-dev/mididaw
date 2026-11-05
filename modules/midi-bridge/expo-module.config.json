@@ -1,0 +1,9 @@
+{
+  "name": "midi-bridge",
+  "platforms": ["android"],
+  "android": {
+    "modules": [
+      "expo.modules.midibridge.MidiBridgeModule"
+    ]
+  }
+}
