@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MIDIDAW — Free Low-Latency Mobile MIDI Controller & PC Bridge for DAWs</title>
+  
+  <!-- SEO Meta Tags -->
+  <meta name="description" content="Turn your phone or tablet into a low-latency MIDI controller for FL Studio, Ableton Live, Reaper, Cubase, and Logic Pro. Features scale lock keys, MPC drum pads, microtonal slide ribbon, and USB/Wi-Fi PC bridge.">
+  <meta name="keywords" content="midi controller, mobile daw controller, virtual midi keyboard, fl studio mobile midi, ableton mobile controller, android midi controller pc, reaper midi app, low latency midi bridge, usb midi controller android, drum pads app daw">
+  <meta name="author" content="ajaysaagar-dev">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://ajaysaagar-dev.github.io/mididaw/">
+
+  <!-- OpenGraph / Social Meta Tags -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://ajaysaagar-dev.github.io/mididaw/">
+  <meta property="og:title" content="MIDIDAW — Low-Latency Mobile MIDI Controller for DAWs">
+  <meta property="og:description" content="Expressive scale keyboard, MPC-style velocity drum pads, microtonal ribbon slide roll, and direct USB/Wi-Fi connection to your PC DAW.">
+  <meta property="og:image" content="https://ajaysaagar-dev.github.io/mididaw/Mididaw.svg">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="MIDIDAW — Free Open-Source Mobile MIDI Controller">
+  <meta name="twitter:description" content="Turn your phone into a professional DAW MIDI controller with direct USB mode and high-speed PC bridge.">
+  <meta name="twitter:image" content="https://ajaysaagar-dev.github.io/mididaw/Mididaw.svg">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="Mididaw.svg">
+
+  <!-- Google Structured Data (JSON-LD) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "MIDIDAW",
+    "operatingSystem": "Android, Windows",
+    "applicationCategory": "MultimediaApplication",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "description": "Ultra-low latency mobile MIDI controller app for digital audio workstations including FL Studio, Ableton Live, and Reaper.",
+    "author": {
+      "@type": "Person",
+      "name": "Ajay Saagar",
+      "url": "https://github.com/ajaysaagar-dev"
+    },
+    "url": "https://ajaysaagar-dev.github.io/mididaw/"
+  }
+  </script>
+
+  <style>
+    :root {
+      --bg: #09090e;
+      --card-bg: rgba(22, 22, 32, 0.7);
+      --card-border: rgba(132, 0, 255, 0.2);
+      --accent-purple: #8400ff;
+      --accent-red: #ff0051;
+      --accent-cyan: #00f0ff;
+      --text: #f0f0f8;
+      --text-muted: #9ba1b0;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* Ambient Glow Background */
+    .glow-bg {
+      position: fixed;
+      top: -20%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 800px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(132, 0, 255, 0.25) 0%, rgba(255, 0, 81, 0.15) 50%, transparent 70%);
+      filter: blur(90px);
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 24px 8%;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(12px);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(9, 9, 14, 0.85);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: #fff;
+      font-weight: 800;
+      font-size: 1.3rem;
+      letter-spacing: 0.5px;
+    }
+
+    .brand img {
+      width: 38px;
+      height: 38px;
+    }
+
+    .nav-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      margin-left: 28px;
+      font-size: 0.95rem;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover {
+      color: #fff;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+      cursor: pointer;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent-purple), var(--accent-red));
+      color: #fff;
+      box-shadow: 0 4px 20px rgba(132, 0, 255, 0.35);
+    }
+
+    .btn-primary:hover {
+      box-shadow: 0 6px 30px rgba(255, 0, 81, 0.5);
+      transform: translateY(-2px);
+    }
+
+    .btn-outline {
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #fff;
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .btn-outline:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.4);
+      transform: translateY(-2px);
+    }
+
+    /* Hero Section */
+    .hero {
+      text-align: center;
+      padding: 90px 8% 60px;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .badge-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 16px;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      background: rgba(132, 0, 255, 0.15);
+      border: 1px solid rgba(132, 0, 255, 0.4);
+      color: #c98aff;
+      margin-bottom: 24px;
+    }
+
+    .hero h1 {
+      font-size: clamp(2.4rem, 5vw, 3.8rem);
+      font-weight: 900;
+      line-height: 1.15;
+      letter-spacing: -0.5px;
+      margin-bottom: 22px;
+      background: linear-gradient(180deg, #ffffff 40%, #c4c4dc 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero p {
+      font-size: 1.2rem;
+      color: var(--text-muted);
+      max-width: 720px;
+      margin: 0 auto 36px;
+    }
+
+    .hero-actions {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    /* Features Grid */
+    .section-title {
+      text-align: center;
+      font-size: 2.2rem;
+      font-weight: 800;
+      margin-bottom: 12px;
+    }
+
+    .section-desc {
+      text-align: center;
+      color: var(--text-muted);
+      margin-bottom: 48px;
+      font-size: 1.05rem;
+    }
+
+    .features-section {
+      padding: 80px 8%;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 24px;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 32px;
+      backdrop-filter: blur(16px);
+      transition: all 0.3s ease;
+    }
+
+    .card:hover {
+      border-color: rgba(255, 0, 81, 0.4);
+      transform: translateY(-4px);
+      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.4);
+    }
+
+    .card-icon {
+      font-size: 2rem;
+      margin-bottom: 16px;
+      display: inline-block;
+    }
+
+    .card h3 {
+      font-size: 1.3rem;
+      margin-bottom: 12px;
+      color: #fff;
+    }
+
+    .card p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+
+    /* DAW Compatibility */
+    .daws-section {
+      padding: 70px 8%;
+      background: rgba(255, 255, 255, 0.015);
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      text-align: center;
+    }
+
+    .daw-tags {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .daw-tag {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 8px 18px;
+      border-radius: 999px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: #e0e0f0;
+    }
+
+    /* Setup Tabs */
+    .setup-section {
+      padding: 80px 8%;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .tabs {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .tab-btn {
+      padding: 10px 22px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      color: var(--text-muted);
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .tab-btn.active {
+      background: var(--accent-purple);
+      border-color: var(--accent-purple);
+      color: #fff;
+    }
+
+    .tab-content {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 32px;
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    .tab-content ol {
+      padding-left: 24px;
+    }
+
+    .tab-content li {
+      margin-bottom: 14px;
+      color: #ddd;
+    }
+
+    footer {
+      text-align: center;
+      padding: 40px 8%;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    footer a {
+      color: #c98aff;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="glow-bg"></div>
+
+  <!-- Header -->
+  <header>
+    <a href="#" class="brand">
+      <img src="Mididaw.svg" alt="MIDIDAW Logo">
+      <span>MIDIDAW</span>
+    </a>
+    <div class="nav-links">
+      <a href="#features">Features</a>
+      <a href="#daws">Supported DAWs</a>
+      <a href="#setup">Connection Guide</a>
+      <a href="https://github.com/ajaysaagar-dev/mididaw" target="_blank" rel="noopener">GitHub</a>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="badge-pill">⚡ Sub-Millisecond Latency • 100% Free & Open Source</div>
+    <h1>Turn Your Phone into a Professional DAW MIDI Controller</h1>
+    <p>
+      An ultra-responsive mobile touch surface featuring scale-quantized piano keys, MPC velocity drum pads, microtonal ribbon slide rolls, and zero-configuration USB and Wi-Fi PC bridges.
+    </p>
+    <div class="hero-actions">
+      <a href="https://github.com/ajaysaagar-dev/mididaw/releases" class="btn btn-primary" target="_blank" rel="noopener">
+        <span>Download Releases</span> ➔
+      </a>
+      <a href="https://github.com/ajaysaagar-dev/mididaw" class="btn btn-outline" target="_blank" rel="noopener">
+        ⭐ Star on GitHub
+      </a>
+    </div>
+  </section>
+
+  <!-- Features Grid -->
+  <section id="features" class="features-section">
+    <h2 class="section-title">Built for Producers & Performers</h2>
+    <p class="section-desc">Engineered for extreme performance, low latency, and maximum musical expression.</p>
+    
+    <div class="grid-3">
+      <div class="card">
+        <span class="card-icon">🎹</span>
+        <h3>Intelligent Scales & Keyboard</h3>
+        <p>Lock your keyboard to 16+ musical scales including Pentatonic, Blues, Dorian, and Harmonic Minor. Never play out of key again.</p>
+      </div>
+
+      <div class="card">
+        <span class="card-icon">🥁</span>
+        <h3>MPC-Style Drum Pads</h3>
+        <p>Responsive multi-touch finger drumming with customizable MIDI note assignments, channels (1–16), and haptic trigger feedback.</p>
+      </div>
+
+      <div class="card">
+        <span class="card-icon">🎛️</span>
+        <h3>Microtonal Slide Roll</h3>
+        <p>Continuous capacitive ribbon controller for smooth pitch glissando, fretless synth leads, and live filter modulation.</p>
+      </div>
+
+      <div class="card">
+        <span class="card-icon">🔌</span>
+        <h3>Direct USB Hardware Mode</h3>
+        <p>Transforms your Android device into a class-compliant USB MIDI hardware gadget. No PC driver or background app required.</p>
+      </div>
+
+      <div class="card">
+        <span class="card-icon">⚡</span>
+        <h3>Standalone PC Bridge</h3>
+        <p>Dedicated Windows companion application with automatic ADB port forwarding and high-speed binary WebSocket streaming.</p>
+      </div>
+
+      <div class="card">
+        <span class="card-icon">📶</span>
+        <h3>Wi-Fi Wireless Freedom</h3>
+        <p>Jam untethered anywhere in your home studio with ultra-low latency WebSocket streaming over your local Wi-Fi router.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- DAW Compatibility -->
+  <section id="daws" class="daws-section">
+    <h2 class="section-title">Works with Every Major DAW</h2>
+    <p class="section-desc">Fully compatible with all digital audio workstations that accept MIDI input.</p>
+    <div class="daw-tags">
+      <span class="daw-tag">FL Studio</span>
+      <span class="daw-tag">Ableton Live</span>
+      <span class="daw-tag">Cockos Reaper</span>
+      <span class="daw-tag">Apple Logic Pro</span>
+      <span class="daw-tag">Steinberg Cubase</span>
+      <span class="daw-tag">PreSonus Studio One</span>
+      <span class="daw-tag">Bitwig Studio</span>
+      <span class="daw-tag">Reason Studios</span>
+      <span class="daw-tag">Native Instruments Maschine</span>
+    </div>
+  </section>
+
+  <!-- Setup Guide Tabs -->
+  <section id="setup" class="setup-section">
+    <h2 class="section-title">Quick Connection Guide</h2>
+    <p class="section-desc">Choose between plug-and-play USB hardware mode or the desktop bridge application.</p>
+
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab(0)">Method 1: Direct USB MIDI</button>
+      <button class="tab-btn" onclick="switchTab(1)">Method 2: Windows PC Bridge</button>
+    </div>
+
+    <div class="tab-content active" id="tab-0">
+      <ol>
+        <li>Connect your phone to your PC via a USB cable.</li>
+        <li>Swipe down the Android notification panel, tap <strong>"Charging this device via USB"</strong>, and choose <strong>MIDI</strong>.</li>
+        <li>Open your DAW (e.g. FL Studio or Ableton Live), open <strong>MIDI Settings</strong>, and enable the detected <strong>Android / USB MIDI Device</strong>.</li>
+        <li>In MIDIDAW, tap <strong>USB</strong> on the top bar and start playing with zero latency!</li>
+      </ol>
+    </div>
+
+    <div class="tab-content" id="tab-1">
+      <ol>
+        <li>Download and launch <strong>MidiDawBridge.exe</strong> on your Windows PC.</li>
+        <li>The bridge automatically forwards the USB ADB port (<code>127.0.0.1:8080</code>) and displays your local Wi-Fi IP address.</li>
+        <li>In the mobile app, tap <strong>Bridge</strong> on the top bar, select <strong>USB</strong> or enter your Wi-Fi IP, and tap <strong>Connect</strong>.</li>
+        <li>The status turns green (<strong>Bridge Connected</strong>) and MIDI notes stream in real time directly to your DAW tracks!</li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <p>
+      &copy; 2026 MIDIDAW. Open source under the MIT License. Developed by <a href="https://github.com/ajaysaagar-dev" target="_blank" rel="noopener">ajaysaagar-dev</a>.
+    </p>
+  </footer>
+
+  <script>
+    function switchTab(index) {
+      const buttons = document.querySelectorAll('.tab-btn');
+      const contents = document.querySelectorAll('.tab-content');
+      buttons.forEach((btn, i) => btn.classList.toggle('active', i === index));
+      contents.forEach((content, i) => content.classList.toggle('active', i === index));
+    }
+  </script>
+</body>
+</html>

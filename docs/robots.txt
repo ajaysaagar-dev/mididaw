@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://ajaysaagar-dev.github.io/mididaw/sitemap.xml
